@@ -1,7 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 
-import AuthUserContext from './AuthUserContext';
+// import AuthUserContext from './AuthUserContext';
 import { firebase } from '../firebase';
 import * as routes from '../constants/routes';
 
@@ -16,15 +18,22 @@ const withAuthorization = (authCondition) => (Component) => {
     }
 
     render() {
-      return (
-        <AuthUserContext.Consumer>
-          {authUser => authUser ? <Component /> : null}
-        </AuthUserContext.Consumer>
-      );
+      // return (
+        // <AuthUserContext.Consumer>
+          return this.props.authUser ? <Component /> : null;
+        // </AuthUserContext.Consumer>
+      // );
     }
   }
 
-  return withRouter(WithAuthorization);
+  const mapStateToProps = (state) => ({
+    authUser: state.sessionState.authUser,
+  });
+  // return withRouter(WithAuthorization);
+  return compose(
+    withRouter,
+    connect(mapStateToProps),
+  )(WithAuthorization);
 }
 
 export default withAuthorization;
